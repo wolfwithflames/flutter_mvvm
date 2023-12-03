@@ -11,19 +11,11 @@ void main() {
     MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: rootRouter.config(),
-
       builder: (_, router) {
         return router ?? const FlutterLogo();
       },
-      // initialRoute: HomeScreen.id,
-      // routes: {
-      //   HomeScreen.id: (context) => const HomeScreen(),
-      //   UserDetailsScreen.id: (context) => UserDetailsScreen(
-      //       ModalRoute.of(context)!.settings.arguments as User),
-      // },
     ),
   );
 }
-
 
 // Router :  https://pub.dev/packages/go_router

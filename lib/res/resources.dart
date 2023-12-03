@@ -3,7 +3,6 @@ import 'colors/app.colors.dart';
 import 'dimentions/app.dimensions.dart';
 
 class Resources {
-
   // ignore: unused_field
   final BuildContext _context;
 
@@ -17,8 +16,7 @@ class Resources {
     return AppDimension();
   }
 
-  static Resources of(BuildContext context){
+  static Resources of(BuildContext context) {
     return Resources(context);
   }
-
 }

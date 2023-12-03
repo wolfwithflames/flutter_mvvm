@@ -1,15 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:mvvm/models/userModel/user.model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/remote/response/api.status.dart';
-import '../../../res/app.context.extension.dart';
 import '../../../view_model/userViewModel/user.view.model.dart';
-import '../../shared/loading.widget.dart';
 import '../../shared/my.error.widget.dart';
 import '../../shared/my.text.view.dart';
-import '../userScreen/user.screen.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -26,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    viewModel.fetchUserData();
+    // viewModel.fetchProducts();
     super.initState();
   }
 
@@ -36,22 +31,37 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Center(child: MyTextView(label: 'Test')),
         backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(
+            onPressed: viewModel.refreshList,
+            icon: const Icon(
+              Icons.refresh,
+              color: Colors.white,
+            ),
+          )
+        ],
       ),
       body: ChangeNotifierProvider<UserVM>(
         create: (BuildContext context) => viewModel,
         child: Consumer<UserVM>(
           builder: (context, viewModel, _) {
-            switch (viewModel.userModel.status) {
-              case ApiStatus.loading:
-                print("Log :: LOADING");
-                return const LoadingWidget();
-              case ApiStatus.error:
-                print("Log :: ERROR");
-                return MyErrorWidget(viewModel.userModel.message ?? "NA");
-              case ApiStatus.completed:
-                print("Log :: COMPLETED");
-                return _getUsersListView(viewModel.userModel.data?.users);
-              default:
+            // switch (viewModel.userModel.status) {
+            //   case ApiStatus.loading:
+            //     return const LoadingWidget();
+            //   case ApiStatus.error:
+            //     return MyErrorWidget(viewModel.userModel.message ?? "NA");
+            //   case ApiStatus.completed:
+            //     return _getUsersListView(viewModel.userModel.data?.users);
+            //   default:
+            // }
+            if (viewModel.fetchedProducts == null) {
+              return _startListenerButton();
+            }
+            if (viewModel.fetchedProducts!.isEmpty) {
+              return const MyErrorWidget("No products fetched");
+            }
+            if (viewModel.fetchedProducts!.isNotEmpty) {
+              return _productList();
             }
             return Container();
           },
@@ -60,40 +70,24 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _getUsersListView(List<User>? users) {
-    return ListView.builder(
-        itemCount: users?.length,
-        itemBuilder: (context, position) {
-          return _getUserListItem(users![position]);
-        });
-  }
-
-  Widget _getUserListItem(User item) {
-    return Card(
-      shape: const RoundedRectangleBorder(
-          side: BorderSide(color: Colors.grey, width: 1.0),
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      elevation: context.resources.dimension.lightElevation,
-      child: ListTile(
-        title: MyTextView(label: item.name),
-        subtitle: Column(children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: MyTextView(label: item.note),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: MyTextView(label: item.phone),
-          ),
-        ]),
-        onTap: () {
-          _goToDetailScreen(context, item);
-        },
+  Widget _startListenerButton() {
+    return Center(
+      child: TextButton(
+        onPressed: viewModel.fetchProducts,
+        child: const Text("Fetch Products"),
       ),
     );
   }
 
-  void _goToDetailScreen(BuildContext context, User item) {
-    Navigator.pushNamed(context, UserDetailsScreen.id, arguments: item);
+  Widget _productList() {
+    return ListView.builder(
+      itemCount: viewModel.fetchedProducts?.length,
+      itemBuilder: (context, index) {
+        final product = viewModel.fetchedProducts?[index];
+        return ListTile(
+          title: Text(product!.title ?? ""),
+        );
+      },
+    );
   }
 }
