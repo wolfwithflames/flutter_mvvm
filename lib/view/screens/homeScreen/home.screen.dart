@@ -54,13 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
             //     return _getUsersListView(viewModel.userModel.data?.users);
             //   default:
             // }
-            if (viewModel.fetchedProducts == null) {
+            if (viewModel.fetchedDevice == null) {
               return _startListenerButton();
             }
-            if (viewModel.fetchedProducts!.isEmpty) {
+            if (viewModel.fetchedDevice!.isEmpty) {
               return const MyErrorWidget("No products fetched");
             }
-            if (viewModel.fetchedProducts!.isNotEmpty) {
+            if (viewModel.fetchedDevice!.isNotEmpty) {
               return _productList();
             }
             return Container();
@@ -73,19 +73,41 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _startListenerButton() {
     return Center(
       child: TextButton(
-        onPressed: viewModel.fetchProducts,
+        onPressed: viewModel.startListener,
         child: const Text("Fetch Products"),
       ),
     );
   }
 
   Widget _productList() {
-    return ListView.builder(
-      itemCount: viewModel.fetchedProducts?.length,
-      itemBuilder: (context, index) {
-        final product = viewModel.fetchedProducts?[index];
-        return ListTile(
-          title: Text(product!.title ?? ""),
+    return AnimatedList(
+      key: viewModel.listKey,
+      initialItemCount: viewModel.fetchedDevice?.length ?? 0,
+      itemBuilder: (context, index, animation) {
+        final product = viewModel.fetchedDevice?[index];
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(-1, 0),
+            end: const Offset(0, 0),
+          ).animate(animation),
+          child: ListTile(
+            title: Text(product!.address),
+            subtitle: FutureBuilder<String?>(
+              future: product.hostName,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasData) {
+                  return Text(snapshot.data ?? "");
+                }
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
         );
       },
     );

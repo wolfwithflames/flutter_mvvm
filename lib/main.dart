@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:network_tools_flutter/network_tools_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'router/router.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final appDocDirectory = await getApplicationDocumentsDirectory();
+
+  await configureNetworkTools('build', enableDebugging: true);
 
   final rootRouter = AppRouter();
 
