@@ -8,7 +8,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocDirectory = await getApplicationDocumentsDirectory();
 
-  await configureNetworkTools('build', enableDebugging: true);
+  await configureNetworkTools("${appDocDirectory.path}/network_tools",
+      enableDebugging: true);
 
   final rootRouter = AppRouter();
 

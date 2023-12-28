@@ -64,6 +64,7 @@ class UserVM extends ChangeNotifier {
 
   void refreshList() {
     fetchedDevice = null;
+    startListener();
     notifyListeners();
   }
 

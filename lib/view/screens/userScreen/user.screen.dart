@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm/models/userModel/user.model.dart';
-import '../../shared/my.text.view.dart';
+
 import '../../../res/app.context.extension.dart';
+import '../../shared/my.text.view.dart';
 
 class UserDetailsScreen extends StatelessWidget {
   static const String id = "user_details";
@@ -33,9 +34,13 @@ class UserDetailsScreen extends StatelessWidget {
                 // ),
                 // ),
                 Card(
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                       side: BorderSide(color: Colors.grey, width: 1.0),
                       borderRadius: BorderRadius.all(Radius.circular(10))),
+                  elevation: context.resources.dimension.highElevation,
+                  margin:
+                      EdgeInsets.all(context.resources.dimension.smallMargin),
+                  color: context.resources.color.catChipColor,
                   child: Column(
                     children: [
                       Padding(
@@ -68,10 +73,6 @@ class UserDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  elevation: context.resources.dimension.highElevation,
-                  margin:
-                      EdgeInsets.all(context.resources.dimension.smallMargin),
-                  color: context.resources.color.catChipColor,
                 )
               ],
             ),

@@ -40,3 +40,4 @@ lib/generated_plugin_registrant.dart
 # For this project only ignore the platform folders
 # android
 # ios
+ios/Podfile.lock
